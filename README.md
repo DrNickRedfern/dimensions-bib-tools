@@ -4,7 +4,7 @@ Tools for analysing bibliometric data from the Dimensions database
 ## Co-citation percentile rank
 The file `co_citation_percentile_rank.py` estimates the percentile rank of a target publication among its co-citation cohort, applying the method described in 
 
-> Seppänen, JT., Värri, H. & Ylönen, I. (2022) Co-citation Percentile Rank and JYUcite: a new network-standardized output-level citation influence metric and its implementation using Dimensions API. *Scientometrics* 127: 3523–3541. [https://doi-org.brad.idm.oclc.org/10.1007/s11192-022-04393-8](https://doi-org.brad.idm.oclc.org/10.1007/s11192-022-04393-8).
+> Seppänen, JT., Värri, H. & Ylönen, I. (2022) Co-citation Percentile Rank and JYUcite: a new network-standardized output-level citation influence metric and its implementation using Dimensions API. *Scientometrics* 127: 3523–3541. [https://doi.org/10.1007/s11192-022-04393-8](https://doi.org/10.1007/s11192-022-04393-8).
 
 This requires access to the Dimensions API, and is limited by the number of requests you can make in a query based on your Dimensions subscription.
 
