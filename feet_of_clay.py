@@ -1,13 +1,16 @@
 import dimcli
+from dotenv import load_dotenv
 import numpy as np
 import pandas as pd
 
 import json
 import os
 
+load_dotenv()
+
 # Set search paramters
 # Crossref asks you to be polite by providing an email when making API requests
-EMAIL: str = 'name@email.org'
+EMAIL: str = os.getenv('EMAIL')
 GRIDID: str = 'grid.6268.a'
 YEAR: int = 2022
 
@@ -21,7 +24,8 @@ else:
     print('Data folder already exists.')
 
 # Log into Dimensions API
-dimcli.login()
+API_KEY = os.getenv('API_KEY')
+dimcli.login(key=API_KEY, endpoint='https://app.dimensions.ai/api/dsl/v2')
 dsl = dimcli.Dsl()
 
 # Get the data for all publications from an institution published in a given year
@@ -104,13 +108,16 @@ retracted_research = pd.merge(
     how='left'
 )
 
-retracted_research.to_csv(os.path.join(DATA_DIR, ''.join(['retracted_research_', str(YEAR), '.csv'])), index=False, encoding = 'utf-8')
+if retracted_research.empty:
+    pass
+else:
+    retracted_research.to_csv(os.path.join(DATA_DIR, ''.join(['retracted_research_', str(YEAR), '.csv'])), index=False, encoding = 'utf-8')
 
 # Get the list of references cited by an institution's outputs
 df_references = df_publications.filter(['pub_id', 'reference_ids']).explode('reference_ids')
 df_references = df_references[df_references['reference_ids'].notnull()]
 
-split: int = int(np.ceil(df_references.shape[0]/400))
+split: int = int(np.ceil(df_references.shape[0]/390))
 df_references_split: list = np.array_split(df_references, split)
 
 '''
@@ -132,13 +139,13 @@ if not os.path.exists(os.path.join(DATA_DIR, ''.join(['cited_publications_', str
 
     for i in range(len(df_references_split)):
         pubs = df_references_split[i]['reference_ids'].drop_duplicates()
-        results = dsl.query(f"""search publications
+        results = dsl.query_iterative(f"""search publications
                where id in {json.dumps(list(pubs))}
-               return publications[id+doi] limit 400
+               return publications[id+doi]
                """).as_dataframe()
         df_cited_publications = pd.concat([df_cited_publications, results])
         
-    df_cited_publications.to_csv(os.path.join(''.join(['cited_publications_', str(YEAR), '.csv'])), index=False)
+    df_cited_publications.to_csv(os.path.join(DATA_DIR, ''.join(['cited_publications_', str(YEAR), '.csv'])), index=False)
 else:
     df_cited_publications = pd.read_csv(os.path.join(DATA_DIR, ''.join(['cited_publications_', str(YEAR), '.csv'])))
 
@@ -160,6 +167,9 @@ df_problematic_publications = (
     .rename(columns={'doi': 'original_paper_doi'})
 )
 
+df_problematic_publications = df_problematic_publications[df_problematic_publications['original_paper_doi'].notnull()]
+df_problematic_publications = df_problematic_publications.drop_duplicates()
+
 df_problematic_publications = pd.merge(
     df_problematic_publications,
     retractions,
@@ -173,7 +183,6 @@ df_problematic_publications = (
                      'reason': 'retraction_reason', 
                      'record_id': 'rw_record_id', 
                      'original_paper_doi': 'retracted_paper_doi'})
-    .assign(rw_record_id = lambda df: df['rw_record_id'].astype(int))
 )
 
 df_problematic_publications = pd.merge(
@@ -192,8 +201,9 @@ df_problematic_publications = pd.merge(
 
 df_problematic_publications = (
     df_problematic_publications
-    .rename(columns={'reference_ids_y': 'retracted_pub_id'})
-    .drop(columns=['reference_ids_x'])
+    .rename(columns={'reference_ids_y': 'retracted_pub_id', 
+                     'title_x': 'title'})
+    .drop(columns=['reference_ids_x', 'title_y'])
 )
 df_problematic_publications['date'] = pd.to_datetime(df_problematic_publications['date'])
 df_problematic_publications['cited_after_retraction'] = df_problematic_publications.apply(lambda df: True if df['retraction_date'] < df['date'] else False, axis=1)
@@ -210,5 +220,6 @@ df_problematic_publications = df_problematic_publications[['researcher_id', 'ful
 title, pub_id = df_problematic_publications.pop('title'), df_problematic_publications.pop('pub_id')
 df_problematic_publications.insert(5, 'pub_id', pub_id)
 df_problematic_publications.insert(9, 'title', title)
+df_problematic_publications = df_problematic_publications.assign(rw_record_id = lambda df: df['rw_record_id'].astype(int))
 
 df_problematic_publications.to_csv(os.path.join(DATA_DIR, ''.join(['problematic_publications_', str(YEAR), '.csv'])), index=False)
