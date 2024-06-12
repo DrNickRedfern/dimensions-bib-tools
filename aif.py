@@ -39,6 +39,8 @@ for i in range(len(references_split)):
                             """).as_dataframe()
     citations = pd.concat([citations, results])
 
+dimcli.logout()
+
 # Calculate the number of publications published in each year
 publications_per_year = publications.groupby('year').count().reset_index()
 

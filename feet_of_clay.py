@@ -12,7 +12,7 @@ load_dotenv()
 # Crossref asks you to be polite by providing an email when making API requests
 EMAIL: str = os.getenv('EMAIL')
 GRIDID: str = 'grid.6268.a'
-YEAR: int = 2022
+YEAR: int = 2023
 
 # Housekeeping
 HOME_DIR: str = os.getcwd()
@@ -149,8 +149,10 @@ if not os.path.exists(os.path.join(DATA_DIR, ''.join(['cited_publications_', str
 else:
     df_cited_publications = pd.read_csv(os.path.join(DATA_DIR, ''.join(['cited_publications_', str(YEAR), '.csv'])))
 
+dimcli.logout()
+
 # Check if any of the cited references are in the Retraction Watch/Crossref and
-# get the institutions citing outputs
+# get the institution's citing outputs
 df_problematic_publications = df_cited_publications[df_cited_publications['doi'].isin(retractions['original_paper_doi'])]
 df_problematic_publications = df_problematic_publications[df_problematic_publications['doi'].notnull()]
 df_problematic_publications = df_problematic_publications.rename(columns={'id': 'reference_ids'})
@@ -162,11 +164,7 @@ df_problematic_publications = pd.merge(
     how='left'
 )
 
-df_problematic_publications = (
-    df_problematic_publications
-    .rename(columns={'doi': 'original_paper_doi'})
-)
-
+df_problematic_publications = df_problematic_publications.rename(columns={'doi': 'original_paper_doi'})
 df_problematic_publications = df_problematic_publications[df_problematic_publications['original_paper_doi'].notnull()]
 df_problematic_publications = df_problematic_publications.drop_duplicates()
 
