@@ -117,9 +117,6 @@ else:
 df_references = df_publications.filter(['pub_id', 'reference_ids']).explode('reference_ids')
 df_references = df_references[df_references['reference_ids'].notnull()]
 
-split: int = int(np.ceil(df_references.shape[0]/390))
-df_references_split: list = np.array_split(df_references, split)
-
 '''
 Publications aren't going to suddenly cite new publications after they have 
 been published, so we only need to get this data once and store it in the 
@@ -135,6 +132,10 @@ to the list.
  prior to running this code.
 '''
 if not os.path.exists(os.path.join(DATA_DIR, ''.join(['cited_publications_', str(YEAR), '.csv']))):
+    
+    split: int = int(np.ceil(df_references.shape[0]/390))
+    df_references_split: list = np.array_split(df_references, split)
+    
     df_cited_publications = pd.DataFrame()
 
     for i in range(len(df_references_split)):
@@ -149,6 +150,8 @@ if not os.path.exists(os.path.join(DATA_DIR, ''.join(['cited_publications_', str
 else:
     df_cited_publications = pd.read_csv(os.path.join(DATA_DIR, ''.join(['cited_publications_', str(YEAR), '.csv'])))
 
+dimcli.logout()
+
 # Check if any of the cited references are in the Retraction Watch/Crossref and
 # get the institutions citing outputs
 df_problematic_publications = df_cited_publications[df_cited_publications['doi'].isin(retractions['original_paper_doi'])]
@@ -162,11 +165,7 @@ df_problematic_publications = pd.merge(
     how='left'
 )
 
-df_problematic_publications = (
-    df_problematic_publications
-    .rename(columns={'doi': 'original_paper_doi'})
-)
-
+df_problematic_publications = df_problematic_publications.rename(columns={'doi': 'original_paper_doi'})
 df_problematic_publications = df_problematic_publications[df_problematic_publications['original_paper_doi'].notnull()]
 df_problematic_publications = df_problematic_publications.drop_duplicates()
 
@@ -199,12 +198,7 @@ df_problematic_publications = pd.merge(
     how='left'
 )
 
-df_problematic_publications = (
-    df_problematic_publications
-    .rename(columns={'reference_ids_y': 'retracted_pub_id', 
-                     'title_x': 'title'})
-    .drop(columns=['reference_ids_x', 'title_y'])
-)
+df_problematic_publications = df_problematic_publications.rename(columns={'reference_ids_y': 'retracted_pub_id'}).drop(columns=['reference_ids_x'])
 df_problematic_publications['date'] = pd.to_datetime(df_problematic_publications['date'])
 df_problematic_publications['cited_after_retraction'] = df_problematic_publications.apply(lambda df: True if df['retraction_date'] < df['date'] else False, axis=1)
 
