@@ -5,6 +5,7 @@ import pandas as pd
 
 import json
 import os
+import sys
 
 load_dotenv()
 
@@ -12,7 +13,7 @@ load_dotenv()
 # Crossref asks you to be polite by providing an email when making API requests
 EMAIL: str = os.getenv('EMAIL')
 GRIDID: str = 'grid.6268.a'
-YEAR: int = 2022
+YEAR: int = 2021
 
 # Housekeeping
 HOME_DIR: str = os.getcwd()
@@ -93,24 +94,24 @@ retracted_research = pd.merge(
     how='left'
 )
 
-retracted_research = (
+if retracted_research.empty or retracted_research['doi'].isnull().all():
+    pass
+else:
+    retracted_research = (
     retracted_research
     .rename(columns={'reason': 'retraction_reason', 
                      'record_id': 'rw_record_id'})
     .drop(columns=['original_paper_doi'])
     .assign(rw_record_id = lambda df: df['rw_record_id'].astype(int))
-)
-
-retracted_research = pd.merge(
+    )
+    
+    retracted_research = pd.merge(
     retracted_research,
     df_affiliations,
     on='pub_id',
     how='left'
-)
-
-if retracted_research.empty:
-    pass
-else:
+    )
+    
     retracted_research.to_csv(os.path.join(DATA_DIR, ''.join(['retracted_research_', str(YEAR), '.csv'])), index=False, encoding = 'utf-8')
 
 # Get the list of references cited by an institution's outputs
@@ -164,6 +165,9 @@ df_problematic_publications = pd.merge(
     on='reference_ids',
     how='left'
 )
+
+if df_problematic_publications.empty:
+    sys.exit('No problematic publications found')
 
 df_problematic_publications = df_problematic_publications.rename(columns={'doi': 'original_paper_doi'})
 df_problematic_publications = df_problematic_publications[df_problematic_publications['original_paper_doi'].notnull()]
