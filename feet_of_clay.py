@@ -13,7 +13,7 @@ load_dotenv()
 # Crossref asks you to be polite by providing an email when making API requests
 EMAIL: str = os.getenv('EMAIL')
 GRIDID: str = 'grid.6268.a'
-YEAR: int = 2021
+YEAR: int = 2024
 
 # Housekeeping
 HOME_DIR: str = os.getcwd()
