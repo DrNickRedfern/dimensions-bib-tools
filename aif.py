@@ -10,7 +10,6 @@ load_dotenv()
 
 # Set variables
 RESEARCHER_ID: list[str] = ['ur.01024019836']
-
 DELTA: int = 5
 
 # Log into Dimensions
