@@ -18,7 +18,7 @@ import json
 import os
 import re
 
-publications = pd.read_csv('publications.csv')
+publications = pd.read_csv('data/aggregated_publications.csv')
 publications = publications.filter(['publication_id']).drop_duplicates(['publication_id'])
 
 split = int(np.ceil(publications.shape[0]/512))
@@ -34,7 +34,7 @@ df_publications = pd.DataFrame()
 df_authors = pd.DataFrame()
 df_affiliations = pd.DataFrame()
 for i in range(len(dat_split)):
-    pubs = dat_split[i]['doi']
+    pubs = dat_split[i]['publication_id']
     results = dsl.query(f'''search publications
                     where id in {json.dumps(list(pubs))}
                     return publications[id+funding_section+funders]
