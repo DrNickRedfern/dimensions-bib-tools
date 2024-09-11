@@ -26,3 +26,7 @@ This script will potentially produce three outputs:
 - A csv file containing a list of all the publications that appear in the Retraction Watch/Crossref database, i.e. outputs that have been retracted.
 - A csv file containing identifiers for publications cited by outputs from an institution - this reduces the need to repeatedly requets the same information from the Dimensions API (published outputs will not start citing new sources) while making it possible to check if any of the cited publications have been retracted at a later date.
 - A csv file listing which outputs from an institution cite publications in the Retraction Watch/Crossref database.
+
+## Talent Program Checker
+
+The file `talent_program_checker.py` checks whether a any Chinese talent programs are listed in the funding section of a publication in the Dimensions database.

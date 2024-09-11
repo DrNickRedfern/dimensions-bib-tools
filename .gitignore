@@ -163,6 +163,7 @@ cython_debug/
 
 # ignore any data
 data/
+*.csv
 
 # ignore jupyter notebooks
 *.ipynb
