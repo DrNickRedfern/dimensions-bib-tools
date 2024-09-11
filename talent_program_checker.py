@@ -34,7 +34,7 @@ df_publications = pd.DataFrame()
 df_authors = pd.DataFrame()
 df_affiliations = pd.DataFrame()
 for i in range(len(dat_split)):
-    pubs = dat_split[i]['publication_id']
+    pubs = dat_split[i]['publication_id'] 
     results = dsl.query(f'''search publications
                     where id in {json.dumps(list(pubs))}
                     return publications[id+funding_section+funders]
