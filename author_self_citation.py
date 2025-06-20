@@ -9,7 +9,9 @@ import os
 load_dotenv()
 
 # Set the Dimensions id of the researcher
-researcher_ids: list[str] = ['ur.0723623633.34', 'ur.013275114747.41']
+publications = pd.read_csv('publications.csv')
+
+researcher_ids = publications['researcher_id'].drop_duplicates().tolist()
 
 # Log into Dimensions API
 API_KEY = os.getenv('API_KEY')
