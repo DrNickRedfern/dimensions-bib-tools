@@ -167,3 +167,7 @@ data/
 
 # ignore jupyter notebooks
 *.ipynb
+
+# ignore workspace files
+.vscode/
+*.code-workspace
