@@ -1,12 +1,17 @@
 import dimcli
 from dotenv import load_dotenv
-import numpy as np
 import pandas as pd
 
 import json
 import os
 
-load_dotenv()
+# Housekeeping
+DATA_DIR: str = os.path.join(os.getcwd(), 'data')
+if not os.path.isdir(DATA_DIR):
+    os.mkdir(DATA_DIR)
+    print('Created folder : ', DATA_DIR)
+else:
+    print('Data folder already exists.')
 
 # Set the Dimensions id of the researcher
 publications = pd.read_csv('publications.csv')
@@ -14,6 +19,7 @@ publications = pd.read_csv('publications.csv')
 researcher_ids = publications['researcher_id'].drop_duplicates().tolist()
 
 # Log into Dimensions API
+load_dotenv()
 API_KEY = os.getenv('API_KEY')
 dimcli.login(key=API_KEY, endpoint='https://app.dimensions.ai/api/dsl/v2')
 dsl = dimcli.Dsl()
