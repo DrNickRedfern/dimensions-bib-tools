@@ -154,7 +154,7 @@ else:
 dimcli.logout()
 
 # Check if any of the cited references are in the Retraction Watch/Crossref and
-# get the institutions citing outputs
+# get the institution's citing outputs
 df_problematic_publications = df_cited_publications[df_cited_publications['doi'].isin(retractions['original_paper_doi'])]
 df_problematic_publications = df_problematic_publications[df_problematic_publications['doi'].notnull()]
 df_problematic_publications = df_problematic_publications.rename(columns={'id': 'reference_ids'})
@@ -165,9 +165,6 @@ df_problematic_publications = pd.merge(
     on='reference_ids',
     how='left'
 )
-
-if df_problematic_publications.empty:
-    sys.exit('No problematic publications found')
 
 df_problematic_publications = df_problematic_publications.rename(columns={'doi': 'original_paper_doi'})
 df_problematic_publications = df_problematic_publications[df_problematic_publications['original_paper_doi'].notnull()]

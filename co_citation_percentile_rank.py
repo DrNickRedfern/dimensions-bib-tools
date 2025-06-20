@@ -92,6 +92,8 @@ for i in range(len(df_co_cites_split)):
                                          return publications[id+times_cited+date]""").as_dataframe()
     df_final_data = pd.concat([df_final_data, final_data])
 
+dimcli.logout()
+
 df_final_data = pd.merge(
     df_co_cites,
     df_final_data,

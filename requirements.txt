@@ -27,6 +27,8 @@ Pygments==2.18.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.1
+pywin32==306
+pyzmq==26.0.3
 recommonmark==0.7.1
 requests==2.32.3
 six==1.16.0
@@ -39,6 +41,7 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.7
 sphinxcontrib-serializinghtml==1.1.10
 stack-data==0.6.3
+tornado==6.4
 tqdm==4.66.4
 traitlets==5.14.3
 tzdata==2024.1
