@@ -46,17 +46,30 @@ same input publication. This is done using the rank() function from pandas,
 which assigns a rank to each value in a group based on the specified method 
 (in this case, 'max' for the maximum value).
 '''
+from dotenv import load_dotenv
+
 import dimcli
 import numpy as np
 import pandas as pd
 
 import json
+import os
 
 # Load a csv file containing the dois of publications to search for
 # The column containg DOIs should be called doi
 df_publications = pd.read_csv('publications.csv')
 
-# Log in to Dimensions API using .ini file
+# Housekeeping
+DATA_DIR: str = os.path.join(os.getcwd(), 'data')
+if not os.path.isdir(DATA_DIR):
+    os.mkdir(DATA_DIR)
+    print('Created folder : ', DATA_DIR)
+else:
+    print('Data folder already exists.')
+
+# Log into Dimensions API
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
 dimcli.login()
 dsl = dimcli.Dsl()
 

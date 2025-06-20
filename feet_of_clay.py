@@ -16,8 +16,7 @@ GRIDID: str = 'grid.6268.a'
 YEAR: int = 2024
 
 # Housekeeping
-HOME_DIR: str = os.getcwd()
-DATA_DIR: str = os.path.join(HOME_DIR, 'data')
+DATA_DIR: str = os.path.join(os.getcwd(), 'data')
 if not os.path.isdir(DATA_DIR):
     os.mkdir(DATA_DIR)
     print('Created folder : ', DATA_DIR)
