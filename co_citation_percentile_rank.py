@@ -70,7 +70,7 @@ df_publications = pd.read_csv(os.path.join(DATA_DIR, 'publications.csv'))
 # Log into Dimensions API
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
-dimcli.login()
+dimcli.login(key=API_KEY, endpoint='https://app.dimensions.ai/api/dsl/v2')
 dsl = dimcli.Dsl()
 
 # Get the data for our publications
@@ -78,7 +78,7 @@ split: int = int(np.ceil(df_publications.shape[0]/400))
 df_publications_split: list = np.array_split(df_publications, split)
 df_target_pubs = pd.DataFrame()
 for i in range(len(df_publications_split)): 
-    pubs = df_publications_split[i]['doi'].drop_duplicates()
+    pubs = df_publications_split[i]['doi'].drop_duplicates().dropna()
     results = dsl.query_iterative(f"""search publications where doi in {json.dumps(list(pubs))}
                                       return publications[id+times_cited+date]""").as_dataframe()
     df_target_pubs = pd.concat([df_target_pubs, results])
