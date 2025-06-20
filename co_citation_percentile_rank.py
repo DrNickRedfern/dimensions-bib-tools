@@ -55,10 +55,6 @@ import pandas as pd
 import json
 import os
 
-# Load a csv file containing the dois of publications to search for
-# The column containg DOIs should be called doi
-df_publications = pd.read_csv('publications.csv')
-
 # Housekeeping
 DATA_DIR: str = os.path.join(os.getcwd(), 'data')
 if not os.path.isdir(DATA_DIR):
@@ -66,6 +62,10 @@ if not os.path.isdir(DATA_DIR):
     print('Created folder : ', DATA_DIR)
 else:
     print('Data folder already exists.')
+
+# Load a csv file containing the dois of publications to search for
+# The column containing DOIs should be called doi
+df_publications = pd.read_csv(os.path.join(DATA_DIR, 'publications.csv'))
 
 # Log into Dimensions API
 load_dotenv()

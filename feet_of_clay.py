@@ -9,7 +9,7 @@ import sys
 
 load_dotenv()
 
-# Set search paramters
+# Set search parameters
 # Crossref asks you to be polite by providing an email when making API requests
 EMAIL: str = os.getenv('EMAIL')
 GRIDID: str = 'grid.6268.a'
