@@ -68,7 +68,7 @@ retractions.columns = (
     .str.lower()
 )
 
-retractions = retractions.drop(columns=['retraction_pub_med_id', 'unnamed:_20', 'notes', 'paywalled', 
+retractions = retractions.drop(columns=['retraction_pub_med_id', 'notes', 'paywalled', 
                                         'original_paper_pub_med_id', 'urls', 'article_type', 'country',
                                         'publisher', 'journal', 'subject', 'institution', 'author',
                                         'original_paper_date', 'title'])
