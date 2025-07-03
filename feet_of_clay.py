@@ -124,10 +124,10 @@ working directory. We can then reload the list of cited references and check
 that against the updated Retraction Watch/Crossref database.
 
 An exception to this rule is the current year of publication, where new
-outputs from an instituion will have to be checked and new references added
+outputs from an institution will have to be checked and new references added
 to the list.
  
- To re-collect the data for a particluar year of publication, delete the 
+ To re-collect the data for a particular year of publication, delete the 
  relevant cited_publications_*.csv file from the current working directory 
  prior to running this code.
 '''
